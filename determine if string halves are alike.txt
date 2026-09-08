@@ -1,0 +1,27 @@
+class Solution {
+public:
+    bool halvesAreAlike(string s) {
+        // Define a fast lookup set for all vowels
+        const std::unordered_set<char> vowels = {
+            'a', 'e', 'i', 'o', 'u', 
+            'A', 'E', 'I', 'O', 'U'
+        };
+        
+        int n = s.length();
+        int mid = n / 2;
+        int count_a = 0;
+        int count_b = 0;
+        
+        // Count vowels in both halves simultaneously
+        for (int i = 0; i < mid; i++) {
+            if (vowels.count(s[i])) {
+                count_a++;
+            }
+            if (vowels.count(s[mid + i])) {
+                count_b++;
+            }
+        }
+        
+        return count_a == count_b;
+    }
+};

@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+void solve() {
+    string s;
+    cin >> s;
+    
+    int n = s.length();
+    int mid = n / 2;
+    
+    // Frequency array for 26 lowercase English letters
+    vector<int> freq(26, 0);
+    
+    // Increment frequency counts for the first half
+    for (int i = 0; i < mid; i++) {
+        freq[s[i] - 'a']++;
+    }
+    
+    // Skip the middle character if the string length is odd
+    int right_start = (n % 2 == 0) ? mid : mid + 1;
+    
+    // Decrement frequency counts for the second half
+    for (int i = right_start; i < n; i++) {
+        freq[s[i] - 'a']--;
+    }
+    
+    // If the frequencies balance back to 0, it is a lapindrome
+    for (int i = 0; i < 26; i++) {
+        if (freq[i] != 0) {
+            cout << "NO\n";
+            return;
+        }
+    }
+    
+    cout << "YES\n";
+}
+
+int main() {
+    // Fast I/O for competitive programming
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int t;
+    cin >> t;
+    while (t--) {
+        solve();
+    }
+    
+    return 0;
+}

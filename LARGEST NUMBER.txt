@@ -1,0 +1,30 @@
+class Solution {
+public:
+    string largestNumber(vector<int>& nums) {
+        // Convert integers to strings for custom comparison
+        vector<string> strNums;
+        for (int num : nums) {
+            strNums.push_back(to_string(num));
+        }
+        
+        // Sort using a custom lambda function: 
+        // Compare combinations (b + a) vs (a + b) to get the largest arrangement
+        sort(strNums.begin(), strNums.end(), [](const string& a, const string& b) {
+            return (b + a) < (a + b);
+        });
+        
+        // Edge case: if the highest number is "0", the array consists entirely of zeros
+        if (strNums[0] == "0") {
+            return "0";
+        }
+        
+        // Concatenate all strings to form the final result
+        string result = "";
+        for (const string& s : strNums) {
+            result += s;
+        }
+        
+        return result;
+    }
+};
+   

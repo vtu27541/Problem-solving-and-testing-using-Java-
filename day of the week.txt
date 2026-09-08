@@ -1,0 +1,44 @@
+class Solution {
+public:
+    string dayOfTheWeek(int day, int month, int year) {
+        string days[] = {
+            "Sunday", "Monday", "Tuesday", "Wednesday",
+            "Thursday", "Friday", "Saturday"
+        };
+
+        int totalDays = 0;
+
+        // Count complete years from 1971 to year - 1
+        for (int y = 1971; y < year; y++) {
+            if (y % 400 == 0 || (y % 4 == 0 && y % 100 != 0))
+                totalDays += 366;
+            else
+                totalDays += 365;
+        }
+
+        int monthDays[] = {
+            31, 28, 31, 30, 31, 30,
+            31, 31, 30, 31, 30, 31
+        };
+
+        // Add days from previous months
+        for (int m = 1; m < month; m++) {
+            totalDays += monthDays[m - 1];
+
+            // Add extra day for February in leap year
+            if (m == 2 &&
+                (year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) {
+                totalDays++;
+            }
+        }
+
+        // Add days before the given date
+        totalDays += day - 1;
+
+        // January 1, 1971 = Friday
+        // Friday has index 5
+        return days[(5 + totalDays) % 7];
+    }
+};
+
+  

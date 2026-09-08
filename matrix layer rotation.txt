@@ -1,0 +1,125 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class Result {
+     public static void matrixRotation(List<List<Integer>> matrix, int r) {
+        int m = matrix.size();
+        int n = matrix.get(0).size();
+        
+        int numLayers = Math.min(m, n) / 2;
+
+        for (int layer = 0; layer < numLayers; layer++) {
+            List<Integer> elements = new ArrayList<>();
+            
+            int top = layer;
+            int bottom = m - 1 - layer;
+            int left = layer;
+            int right = n - 1 - layer;
+
+            // 1. Extract layer elements anti-clockwise starting from top-left
+            // Left column (top to bottom)
+            for (int i = top; i <= bottom; i++) {
+                elements.add(matrix.get(i).get(left));
+            }
+            // Bottom row (left + 1 to right)
+            for (int j = left + 1; j <= right; j++) {
+                elements.add(matrix.get(bottom).get(j));
+            }
+            // Right column (bottom - 1 down to top)
+            for (int i = bottom - 1; i >= top; i--) {
+                elements.add(matrix.get(i).get(right));
+            }
+            // Top row (right - 1 down to left + 1)
+            for (int j = right - 1; j > left; j--) {
+                elements.add(matrix.get(top).get(j));
+            }
+
+            // 2. Compute effective shift modulo layer length
+            int len = elements.size();
+            int shift = r % len;
+
+            // 3. Write elements back rotated anti-clockwise
+            int index = 0;
+
+            // Left column
+            for (int i = top; i <= bottom; i++) {
+                int newIdx = (index - shift + len) % len;
+                matrix.get(i).set(left, elements.get(newIdx));
+                index++;
+            }
+            // Bottom row
+            for (int j = left + 1; j <= right; j++) {
+                int newIdx = (index - shift + len) % len;
+                matrix.get(bottom).set(j, elements.get(newIdx));
+                index++;
+            }
+            // Right column
+            for (int i = bottom - 1; i >= top; i--) {
+                int newIdx = (index - shift + len) % len;
+                matrix.get(i).set(right, elements.get(newIdx));
+                index++;
+            }
+            // Top row
+            for (int j = right - 1; j > left; j--) {
+                int newIdx = (index - shift + len) % len;
+                matrix.get(top).set(j, elements.get(newIdx));
+                index++;
+            }
+        }
+
+        // Print final rotated matrix
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                sb.append(matrix.get(i).get(j));
+                if (j < n - 1) {
+                    sb.append(" ");
+                }
+            }
+            sb.append("\n");
+        }
+        System.out.print(sb.toString());
+    }
+
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+
+        String[] firstMultipleInput = bufferedReader.readLine().replaceAll("\\s+$", "").split(" ");
+
+        int m = Integer.parseInt(firstMultipleInput[0]);
+
+        int n = Integer.parseInt(firstMultipleInput[1]);
+
+        int r = Integer.parseInt(firstMultipleInput[2]);
+
+        List<List<Integer>> matrix = new ArrayList<>();
+
+        IntStream.range(0, m).forEach(i -> {
+            try {
+                matrix.add(
+                    Stream.of(bufferedReader.readLine().replaceAll("\\s+$", "").split(" "))
+                        .map(Integer::parseInt)
+                        .collect(toList())
+                );
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        Result.matrixRotation(matrix, r);
+
+        bufferedReader.close();
+    }
+}
